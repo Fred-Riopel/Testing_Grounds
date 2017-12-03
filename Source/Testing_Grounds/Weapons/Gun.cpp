@@ -2,7 +2,7 @@
 
 #include "Gun.h"
 #include "Animation/AnimInstance.h"
-#include "D:/Repos/Unreal Course/Testing_Grounds/Source/Testing_Grounds/Weapons/BallProjectile.h"
+#include "../Weapons/BallProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
 
