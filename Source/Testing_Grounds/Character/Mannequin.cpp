@@ -73,3 +73,7 @@ void AMannequin::PullTrigger()
 	Gun->OnFire();
 }
 
+void AMannequin::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Gun->Destroy();
+}

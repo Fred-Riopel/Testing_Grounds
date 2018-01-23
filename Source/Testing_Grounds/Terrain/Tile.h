@@ -38,9 +38,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Navigation")
-	FVector NavigationBoundsOffset;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	FVector MinExtent;
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
@@ -66,6 +63,9 @@ private:
 	void PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnPosition);
 
 	void PlaceActor(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPosition);
+
+	//Holds the actors created every tile and get destroyed when the tile is destroyed
+	TArray<AActor *> Garbage;
 
 	UActorPool* Pool;
 

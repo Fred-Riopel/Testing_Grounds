@@ -13,8 +13,6 @@ ATile::ATile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	NavigationBoundsOffset = FVector(2000, 0, 0);
 
 	MinExtent = FVector(0, -2000, 0);
 	MaxExtent = FVector(4000, 2000, 0);
@@ -22,7 +20,6 @@ ATile::ATile()
 
 void ATile::SetPool(UActorPool* InPool)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[%s] Setting Pool %s"), *(this->GetName()), *(InPool->GetName()));
 	Pool = InPool;
 
 	PositionNavMeshBoundsVolume();
@@ -31,13 +28,10 @@ void ATile::SetPool(UActorPool* InPool)
 void ATile::PositionNavMeshBoundsVolume()
 {
 	AActor* NavMeshBoundsVolume = Pool->Checkout();
-	if (NavMeshBoundsVolume == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] Not enough actors in pool."), *GetName());
-		return;
-	}
-	UE_LOG(LogTemp, Warning, TEXT("[%s] Checked out: {%s}"), *GetName(), *NavMeshBoundsVolume->GetName());
-	NavMeshBoundsVolume->SetActorLocation(GetActorLocation() + NavigationBoundsOffset);
+	if (NavMeshBoundsVolume == nullptr) { return; }
+	FVector NavMLocation = GetActorLocation();
+	NavMLocation.X += 2000;
+	NavMeshBoundsVolume->SetActorLocation(NavMLocation);
 	GetWorld()->GetNavigationSystem()->Build();
 }
 
@@ -90,6 +84,7 @@ void ATile::PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnP
 	AActor* Spawned = GetWorld()->SpawnActor(ToSpawn);
 	if (Spawned)
 	{
+		Garbage.Add(Spawned);
 		Spawned->SetActorRelativeLocation(SpawnPosition.Location);
 		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
 		Spawned->SetActorRotation(FRotator(0, SpawnPosition.Rotation, 0));
@@ -102,6 +97,7 @@ void ATile::PlaceActor(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPo
 	APawn* Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn);
 	if (Spawned)
 	{
+		Garbage.Add(Spawned);
 		Spawned->SetActorRelativeLocation(SpawnPosition.Location);
 		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
 		Spawned->SetActorRotation(FRotator(0, SpawnPosition.Rotation, 0));
@@ -121,6 +117,15 @@ void ATile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (Pool != nullptr && NavMeshBoundsVolume != nullptr)
 	{
 		Pool->Return(NavMeshBoundsVolume);
+	}
+	if (Garbage.Num() != 0)
+	{
+		AActor * Prop;
+		while (Garbage.Num() != 0)
+		{
+			Prop = Garbage.Pop();
+			Prop->Destroy();
+		}
 	}
 }
 
