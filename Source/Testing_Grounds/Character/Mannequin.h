@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<class AGun> GunBlueprint;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Setup")
+	bool IsFocus = true;
+
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void PullTrigger();
 
@@ -40,5 +43,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	AGun* Gun;
-
 };

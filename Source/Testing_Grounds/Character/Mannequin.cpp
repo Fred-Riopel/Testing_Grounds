@@ -32,6 +32,7 @@ AMannequin::AMannequin()
 void AMannequin::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (GunBlueprint == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Gun blueprint missing."));
@@ -70,7 +71,10 @@ void AMannequin::UnPossessed()
 
 void AMannequin::PullTrigger()
 {
-	Gun->OnFire();
+	if (IsFocus)
+	{
+		Gun->OnFire();
+	}
 }
 
 void AMannequin::EndPlay(const EEndPlayReason::Type EndPlayReason)

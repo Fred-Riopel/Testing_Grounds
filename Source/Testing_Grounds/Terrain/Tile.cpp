@@ -20,6 +20,7 @@ ATile::ATile()
 
 void ATile::SetPool(UActorPool* InPool)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Setting Pool %s"), *(this->GetName()), *(InPool->GetName()));
 	Pool = InPool;
 
 	PositionNavMeshBoundsVolume();
@@ -28,7 +29,14 @@ void ATile::SetPool(UActorPool* InPool)
 void ATile::PositionNavMeshBoundsVolume()
 {
 	AActor* NavMeshBoundsVolume = Pool->Checkout();
-	if (NavMeshBoundsVolume == nullptr) { return; }
+
+	if (NavMeshBoundsVolume == nullptr) 
+	{ 
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Not enough actors in pool."), *GetName());
+		return; 
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Checking out: (%s)."), *GetName(), *NavMeshBoundsVolume->GetName());
 	FVector NavMLocation = GetActorLocation();
 	NavMLocation.X += 2000;
 	NavMeshBoundsVolume->SetActorLocation(NavMLocation);
@@ -114,13 +122,16 @@ void ATile::BeginPlay()
 
 void ATile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (Pool != nullptr && NavMeshBoundsVolume != nullptr)
-	{
-		Pool->Return(NavMeshBoundsVolume);
-	}
+	UE_LOG(LogTemp, Warning, TEXT("[%s] EndPlay"), *GetName());
+	if (!ensure(NavMeshBoundsVolume)) { 
+		UE_LOG(LogTemp, Warning, TEXT("EndPlay not working"));
+		return; }
+		
+	Pool->Return(NavMeshBoundsVolume);
+	
 	if (Garbage.Num() != 0)
 	{
-		AActor * Prop;
+		AActor* Prop;
 		while (Garbage.Num() != 0)
 		{
 			Prop = Garbage.Pop();
