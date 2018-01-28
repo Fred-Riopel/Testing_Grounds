@@ -65,7 +65,7 @@ private:
 	void PlaceActor(TSubclassOf<APawn> ToSpawn, const FSpawnPosition& SpawnPosition);
 
 	//Holds the actors created every tile and get destroyed when the tile is destroyed
-	TArray<AActor *> Garbage;
+	TArray<AActor*> Garbage;
 
 	UActorPool* Pool;
 
