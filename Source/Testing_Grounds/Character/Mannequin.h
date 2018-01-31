@@ -36,6 +36,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Setup")
 	bool IsFocus = true;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Setup")
+	bool CanFire = true;
+
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void PullTrigger();
 

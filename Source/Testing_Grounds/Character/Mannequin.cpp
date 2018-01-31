@@ -71,7 +71,7 @@ void AMannequin::UnPossessed()
 
 void AMannequin::PullTrigger()
 {
-	if (IsFocus)
+	if (IsFocus && CanFire)
 	{
 		Gun->OnFire();
 	}
